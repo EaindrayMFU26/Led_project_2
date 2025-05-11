@@ -89,7 +89,7 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
   __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
+  //__HAL_RCC_GPIOA_CLK_ENABLE();
 
 
 //  GPIO_InitTypeDef *btn;
@@ -97,12 +97,12 @@ int main(void)
 //  btn->Speed = GPIO_SPEED_FREQ_MEDIUM;
 //  btn->Pull = GPIO_NOPULL;
 //  HAL_GPIO_INIT(GPIOA, btn);
-  GPIO_InitTypeDef btn = {0};
-  btn.Pin = GPIO_PIN_0;
-  btn.Mode = GPIO_MODE_INPUT;
-  btn.Pull = GPIO_PULLDOWN;
-  btn.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(GPIOA, &btn);
+//  GPIO_InitTypeDef btn = {0};
+//  btn.Pin = GPIO_PIN_0;
+//  btn.Mode = GPIO_MODE_INPUT;
+//  btn.Pull = GPIO_PULLDOWN;
+//  btn.Speed = GPIO_SPEED_FREQ_MEDIUM;
+//  HAL_GPIO_Init(GPIOA, &btn);
 
 //  GPIO_InitTypeDef *pLed;
 //  pLed->Mode = GPIO_MODE_OUTPUT_PP;
@@ -124,20 +124,14 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-//	  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
-//	  HAL_Delay(1000);
-//	  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
-//	  HAL_Delay(1000);
-
-	    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_RESET) {
-	      HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
-	    }
-	    else {
-	      HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
-	    }
-
 
     /* USER CODE BEGIN 3 */
+//	  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET) {
+//	    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
+//	  }
+//	  else {
+//	    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+//	  }
   }
   /* USER CODE END 3 */
 }
@@ -272,8 +266,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : B1_Pin MEMS_INT1_Pin MEMS_INT2_Pin TP_INT1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin|MEMS_INT1_Pin|MEMS_INT2_Pin|TP_INT1_Pin;
+  /*Configure GPIO pin : PA1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : MEMS_INT2_Pin TP_INT1_Pin */
+  GPIO_InitStruct.Pin = MEMS_INT2_Pin|TP_INT1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -452,6 +452,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 

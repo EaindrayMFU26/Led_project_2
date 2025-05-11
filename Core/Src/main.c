@@ -42,6 +42,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 /* USER CODE END PV */
 
@@ -87,12 +88,34 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  GPIO_InitTypeDef *pLed;
-  pLed->Mode = GPIO_MODE_OUTPUT_PP;
-  pLed->Speed = GPIO_SPEED_FREQ_MEDIUM;
-  pLed->Pin = GPIO_PIN_8;
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 
-  HAL_GPIO_Init (GPIOE, pLed);
+
+//  GPIO_InitTypeDef *btn;
+//  btn->Mode= GPIO_MODE_INPUT;
+//  btn->Speed = GPIO_SPEED_FREQ_MEDIUM;
+//  btn->Pull = GPIO_NOPULL;
+//  HAL_GPIO_INIT(GPIOA, btn);
+  GPIO_InitTypeDef btn = {0};
+  btn.Pin = GPIO_PIN_0;
+  btn.Mode = GPIO_MODE_INPUT;
+  btn.Pull = GPIO_PULLDOWN;
+  btn.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(GPIOA, &btn);
+
+//  GPIO_InitTypeDef *pLed;
+//  pLed->Mode = GPIO_MODE_OUTPUT_PP;
+//  pLed->Speed = GPIO_SPEED_FREQ_MEDIUM;
+//  pLed->Pin = GPIO_PIN_8;
+  GPIO_InitTypeDef pLed = {0};
+  pLed.Pin = GPIO_PIN_8;
+  pLed.Mode = GPIO_MODE_OUTPUT_PP;
+  pLed.Pull = GPIO_NOPULL;  // Outputs typically use NOPULL
+  pLed.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(GPIOE, &pLed);
+
+  //HAL_GPIO_Init (GPIOE, pLed);
 
   /* USER CODE END 2 */
 
@@ -101,10 +124,17 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
-	  HAL_Delay(1000);
-	  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
-	  HAL_Delay(1000);
+//	  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
+//	  HAL_Delay(1000);
+//	  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+//	  HAL_Delay(1000);
+
+	    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_RESET) {
+	      HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
+	    }
+	    else {
+	      HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+	    }
 
 
     /* USER CODE BEGIN 3 */
